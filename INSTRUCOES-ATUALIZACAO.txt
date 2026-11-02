@@ -1,0 +1,21 @@
+PROJETO MOTORISTA v3 — ATUALIZAÇÃO DO LUCRO POR HORA
+
+O que mudou:
+- Foi acrescentado o registro de horas e minutos trabalhados.
+- O aplicativo calcula automaticamente o lucro líquido por hora no período selecionado.
+- A conta é: (faturamento registrado - despesas registradas) / tempo trabalhado.
+- É possível registrar mais de um turno no mesmo dia.
+- Os registros de tempo ficam salvos junto com os demais dados locais e entram no backup JSON.
+
+Como atualizar manualmente:
+1. Guarde sua versão atual como backup.
+2. No GitHub, abra o repositório projeto-motorista-v3.
+3. Substitua somente o arquivo index.html pelo index.html deste pacote.
+4. Faça o commit das alterações e aguarde a publicação do GitHub Pages.
+5. Abra o aplicativo e registre o tempo trabalhado na tela Início.
+
+Importante:
+- Somente o index.html foi alterado para implementar a função.
+- O manifesto, service worker, ícones e README foram incluídos no pacote sem alterações.
+- Os dados antigos salvos no aparelho são preservados. A nova lista de tempos começa vazia.
+- O lucro por hora aparece como “—” enquanto não houver tempo registrado no período.
