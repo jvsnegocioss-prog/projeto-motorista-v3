@@ -1,32 +1,30 @@
-# Projeto Motorista — protótipo PWA
-
-Protótipo v2 para controle de ganhos, despesas, metas, cadastro de múltiplos veículos e análise manual de ofertas para Uber, 99 e inDrive.
+# Projeto Motorista v3 — atualização de metas
 
 ## Arquivos
-- `index.html`: aplicativo
-- `manifest.webmanifest`: configuração instalável
-- `sw.js`: cache básico para uso offline
-- `icon-192.png` e `icon-512.png`: ícones
+- `index.html`: aplicativo atualizado.
+- `manifest.webmanifest`: configuração PWA.
+- `sw.js`: cache com nova versão para forçar atualização.
+- `README.md`: instruções.
+- `icon-192.png` e `icon-512.png`: ícones.
 
-## Publicar para teste no GitHub Pages
-1. Crie um repositório NOVO para este projeto, separado dos seus outros aplicativos.
-2. Envie os arquivos extraídos diretamente para a raiz do repositório (não deixe o `index.html` dentro de uma subpasta).
-3. Em Settings → Pages, selecione Deploy from a branch, branch `main`, pasta `/(root)`.
-4. Abra o endereço HTTPS gerado no Safari do iPhone.
-5. No Safari, toque em Compartilhar → Adicionar à Tela de Início.
+## Meta por dias trabalhados
+Em Ajustes, informe a meta diária e a quantidade de dias que pretende trabalhar por semana (1 a 7).
+O painel calcula:
+- Hoje: meta diária.
+- Semana: meta diária × dias de trabalho escolhidos.
+- Mês: meta semanal × 4,33.
+- Ano: meta semanal × 52.
 
-## Limitações desta versão
-- O nome é provisório; não é o nome comercial final.
-- A imagem da oferta pode ser selecionada, mas o OCR automático ainda não foi implementado.
-- É possível cadastrar vários veículos e selecionar qual está em uso; a análise utiliza consumo, combustível e manutenção do veículo selecionado.
-- A análise é baseada nos campos digitados e nos custos configurados.
-- Os dados ficam no armazenamento local do navegador/aparelho. Exportar backup regularmente; não há sincronização em nuvem nesta versão.
-- A estimativa não inclui automaticamente todos os custos fixos, impostos ou períodos sem passageiro.
-- Esta versão não se conecta às APIs de Uber, 99 ou inDrive e não aceita/recusa corridas automaticamente.
-- Antes de uso comercial, realizar testes, revisão de segurança, acessibilidade e compatibilidade.
+Exemplo: R$ 200 por dia × 5 dias = R$ 1.000 por semana.
 
+## Atualização manual no GitHub
+1. Abra o repositório `projeto-motorista-v3`.
+2. Entre em cada arquivo e escolha editar ou substituir o conteúdo.
+3. Substitua os arquivos pelos correspondentes deste pacote, inclusive os dois ícones.
+4. Faça commit na branch `main`.
+5. Aguarde o GitHub Pages publicar e abra o app no Safari.
+6. No iPhone, feche o app instalado e abra novamente. Se ainda aparecer a versão antiga, feche o Safari e reabra o endereço.
 
-## Versão 3 — leitura de capturas
-- Permite escolher uma captura de tela da galeria/arquivos e tentar reconhecer texto usando Tesseract.js carregado pela internet.
-- Sugere valor, km e minutos quando consegue identificar os padrões; o motorista deve conferir os campos antes de calcular.
-- O reconhecimento não aceita nem recusa corridas e pode falhar em capturas de baixa qualidade. O formulário manual continua disponível.
+## Dados
+Os registros já existentes ficam no armazenamento local do navegador/aparelho. Não use "Apagar todos os dados locais" durante a atualização. Exporte um backup antes de qualquer manutenção.
+A sincronização entre aparelhos continua fora desta atualização.
