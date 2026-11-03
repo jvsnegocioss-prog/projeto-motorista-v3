@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<meta name="description" content="Controle seus ganhos, custos e metas como motorista de aplicativo.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Projeto Motorista • v3</title>
+<style>
+:root{--bg:#101114;--panel:#1b1c21;--panel2:#24252c;--text:#f5f5f7;--muted:#a6a7b0;--orange:#ff4b18;--green:#15d66a;--red:#ff4d57;--yellow:#ffd447;--line:#34353d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:88px}
+header{position:sticky;top:0;z-index:5;background:#101114ee;backdrop-filter:blur(14px);padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;letter-spacing:.4px;font-size:20px}.brand span{color:var(--orange)}.tag{font-size:11px;color:var(--muted);margin-top:2px}
+main{max-width:760px;margin:auto;padding:18px 14px}.welcome h1{font-size:27px;line-height:1.1;margin:6px 0 8px}.welcome p{color:var(--muted);margin:0 0 18px}
+.periods{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0}.periods button{border:0;border-radius:12px;padding:10px 3px;background:var(--panel2);color:var(--muted);font-weight:700}.periods button.active{background:var(--orange);color:white}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:15px;min-width:0}.label{font-size:12px;color:var(--muted);font-weight:650}.value{font-size:23px;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.value.green{color:var(--green)}.value.orange{color:var(--orange)}.value.red{color:var(--red)}.wide{grid-column:1/-1}
+.progress{height:9px;background:#383940;border-radius:9px;overflow:hidden;margin:12px 0 7px}.progress div{height:100%;background:var(--green);width:0%;transition:width .2s}.smallrow{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:8;background:#17181df5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px max(8px,env(safe-area-inset-bottom));backdrop-filter:blur(14px)}
+nav button{border:0;background:none;color:var(--muted);font-size:11px;font-weight:700;padding:6px 2px}nav button b{display:block;font-size:20px;margin-bottom:2px}nav button.active{color:var(--orange)}
+.page{display:none}.page.active{display:block}.section-title{font-size:21px;margin:8px 0 12px}
+form{display:grid;gap:12px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px}input,select,textarea{width:100%;background:#111216;border:1px solid #3b3c45;border-radius:11px;padding:12px;color:var(--text);font:inherit;min-width:0}input[type=checkbox]{width:auto}
+button.primary{width:100%;border:0;border-radius:13px;padding:14px;background:var(--orange);color:white;font-size:15px;font-weight:850}
+button.secondary,.action{border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);padding:10px 12px;font-weight:700}
+.result{border-radius:16px;padding:15px;background:#13231b;border:1px solid #1d6d3f}.result h3{margin:0 0 6px}.result p{margin:5px 0;color:#d8e7dd}.muted{color:var(--muted)}.item{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}.item:last-child{border-bottom:0}.item strong{display:block}.item small{color:var(--muted)}.empty{color:var(--muted);padding:16px 0}
+.note{font-size:12px;line-height:1.5;color:var(--muted)}.pill{display:inline-block;background:#302019;color:#ff936f;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:800}
+@media(min-width:600px){main{padding:24px}.welcome h1{font-size:34px}.value{font-size:27px}}
+</style>
+</head>
+<body>
+<header><div><div class="brand"><span>●</span> Projeto Motorista</div><div class="tag">Ganhos • custos • metas</div></div><span class="pill">VERSÃO TESTE</span></header>
+<main>
+<section id="dashboard" class="page active">
+ <div class="welcome"><h1>Seu trabalho, <span style="color:var(--orange)">sob controle.</span></h1><p>Acompanhe faturamento, despesas e lucro estimado.</p></div>
+ <div class="periods"><button class="active" data-period="day">Hoje</button><button data-period="week">Semana</button><button data-period="month">Mês</button><button data-period="year">Ano</button></div>
+ <div class="grid">
+  <div class="card"><div class="label">FATURAMENTO</div><div class="value green" id="dRevenue">R$ 0,00</div></div>
+  <div class="card"><div class="label">DESPESAS REGISTRADAS</div><div class="value red" id="dExpenses">R$ 0,00</div></div>
+  <div class="card"><div class="label">LUCRO ESTIMADO*</div><div class="value orange" id="dProfit">R$ 0,00</div></div>
+  <div class="card"><div class="label">SALDO APÓS DESPESAS</div><div class="value" id="dBalance">R$ 0,00</div></div>
+  <div class="card wide"><div class="label">META DE FATURAMENTO</div><div class="value" id="dGoal">R$ 300,00</div><div class="progress"><div id="dProgress"></div></div><div class="smallrow"><span id="dPercent">0% concluído</span><span id="dRemaining">Faltam R$ 300,00</span></div></div>
+  <div class="card"><div class="label">CORRIDAS REGISTRADAS</div><div class="value" id="dTrips">0</div></div>
+  <div class="card"><div class="label">KM REGISTRADOS</div><div class="value" id="dKm">0 km</div></div>
+ </div>
+ <div class="card wide" style="margin-top:12px">
+  <div class="label">LUCRO LÍQUIDO POR HORA</div><div class="value orange" id="dProfitHour">—</div>
+  <div class="smallrow"><span>Tempo trabalhado no período</span><strong id="dWorkTime">0h 00min</strong></div>
+  <p class="note">Calculado automaticamente: (faturamento − despesas registradas) ÷ tempo trabalhado.</p>
+ </div>
+ <div class="card" style="margin-top:12px"><h3 style="margin-top:0">Registrar tempo trabalhado</h3>
+  <form id="workForm"><div><label>Data do trabalho</label><input id="workDate" type="date" required></div>
+   <div class="formgrid"><div><label>Horas</label><input id="workHours" type="number" min="0" max="24" step="1" value="0" required></div><div><label>Minutos</label><input id="workMinutes" type="number" min="0" max="59" step="1" value="0" required></div></div>
+   <button class="primary" type="submit">Salvar tempo trabalhado</button>
+  </form><p class="note">Você pode registrar mais de um turno no mesmo dia. O aplicativo soma os períodos.</p>
+  <input id="workEditId" type="hidden" value="">
+  <button id="cancelWorkEdit" class="secondary" type="button" style="display:none;width:100%;margin-top:8px">Cancelar edição</button>
+  <div style="margin-top:16px">
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+    <h3 style="margin:0">Registros de tempo</h3>
+    <button id="clearWorkSessions" class="secondary" type="button">Excluir todos</button>
+   </div>
+   <div id="workSessionsList" style="margin-top:8px"></div>
+  </div>
+ </div>
+ <p class="note">*O lucro estimado só considera os custos que você registrou. Para uma estimativa mais fiel, configure combustível, manutenção e demais custos do veículo.</p>
+</section>
+<section id="trips" class="page">
+ <h2 class="section-title">Analisar uma corrida</h2>
+ <div class="card"><form id="tripForm">
+  <div class="formgrid"><div><label>Aplicativo</label><select id="platform"><option>Uber</option><option>99</option><option>inDrive</option><option>Outro</option></select></div><div><label>Valor oferecido (R$)</label><input id="fare" type="number" min="0" step=".01" placeholder="32,00" required></div>
+  <div><label>Km até embarque</label><input id="pickupKm" type="number" min="0" step=".1" value="0"></div><div><label>Km da viagem</label><input id="tripKm" type="number" min="0" step=".1" placeholder="12" required></div>
+  <div><label>Tempo até embarque (min)</label><input id="pickupMin" type="number" min="0" value="0"></div><div><label>Tempo da viagem (min)</label><input id="tripMin" type="number" min="1" value="30" required></div></div>
+  <button class="primary" type="submit">Calcular rentabilidade</button>
+ </form></div><div id="tripResult" style="display:none;margin-top:12px" class="result"></div>
+ <div class="card" style="margin-top:12px"><h3 style="margin-top:0">📷 Ler oferta pela captura de tela</h3><p class="note">Selecione uma captura salva em Fotos/Arquivos. O reconhecimento tenta identificar valor, quilômetros e minutos; confira tudo antes de calcular. A leitura depende da qualidade da imagem e pode errar.</p><input type="file" id="offerImage" accept="image/*"><div id="imageStatus" class="note" aria-live="polite" style="margin-top:8px"></div><img id="offerPreview" alt="Prévia da captura selecionada" style="display:none;width:100%;max-height:280px;object-fit:contain;background:#09090a;border-radius:12px;margin-top:10px"><button id="readOfferBtn" class="secondary" type="button" style="width:100%;margin-top:10px" disabled>Reconhecer texto da imagem</button><div id="ocrResults" style="display:none;margin-top:12px"><strong>Texto reconhecido (confira antes de usar)</strong><pre id="ocrText" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#111216;border:1px solid var(--line);padding:10px;border-radius:10px;font-size:12px;max-height:180px;overflow:auto"></pre></div></div>
+ <p class="note">A classificação é uma estimativa e não aceita nem recusa corridas automaticamente. Confira os dados antes de decidir.</p>
+</section>
+<section id="records" class="page">
+ <h2 class="section-title">Ganhos e despesas</h2>
+ <div class="card"><h3 style="margin-top:0">Registrar ganho</h3><form id="incomeForm"><div class="formgrid"><div><label>Aplicativo</label><select id="incomePlatform"><option>Uber</option><option>99</option><option>inDrive</option><option>Outro</option></select></div><div><label>Valor recebido (R$)</label><input id="incomeAmount" type="number" min="0.01" step=".01" required></div><div><label>Quilômetros</label><input id="incomeKm" type="number" min="0" step=".1" value="0"></div><div><label>Data</label><input id="incomeDate" type="date" required></div></div><button class="primary">Salvar ganho</button></form></div>
+ <div class="card" style="margin-top:12px"><h3 style="margin-top:0">Registrar despesa</h3><form id="expenseForm"><div class="formgrid"><div><label>Categoria</label><select id="expenseCategory"><option>Combustível</option><option>Manutenção</option><option>Pneus</option><option>Alimentação</option><option>Pedágio/estacionamento</option><option>Outros</option></select></div><div><label>Valor (R$)</label><input id="expenseAmount" type="number" min=".01" step=".01" required></div><div class="wide"><label>Descrição (opcional)</label><input id="expenseDesc" maxlength="100" placeholder="Ex.: abastecimento"></div><div class="wide"><label>Data</label><input id="expenseDate" type="date" required></div></div><button class="primary">Salvar despesa</button></form></div>
+ <div class="card" style="margin-top:12px"><h3 style="margin-top:0">Últimos lançamentos</h3><div id="recentRecords" class="empty">Nenhum lançamento ainda.</div><button id="exportBtn" class="secondary" style="width:100%;margin-top:10px">Exportar backup (.json)</button></div>
+</section>
+<section id="settings" class="page">
+ <h2 class="section-title">Metas e veículo</h2>
+ <div class="card" style="margin-bottom:12px"><h3 style="margin-top:0">Veículos cadastrados</h3><div><label>Veículo em uso</label><select id="vehicleSelect"></select></div><div id="vehicleSummary" class="note" style="margin-top:8px"></div>
+ <div class="formgrid" style="margin-top:10px"><div><label>Nome do veículo</label><input id="vehicleName" maxlength="50" placeholder="Ex.: Onix 1.0"></div><div><label>Consumo (km/L)</label><input id="vehicleConsumption" type="number" min=".1" step=".1" required></div><div><label>Combustível (R$/L)</label><input id="vehicleFuelPrice" type="number" min="0" step=".01" required></div><div><label>Manutenção e pneus (R$/km)</label><input id="vehicleMaintenance" type="number" min="0" step=".01" required></div></div>
+ <div style="display:flex;gap:8px;margin-top:10px"><button id="saveVehicleBtn" type="button" class="secondary" style="flex:1">Salvar veículo</button><button id="newVehicleBtn" type="button" class="secondary" style="flex:1">Adicionar veículo</button></div><button id="deleteVehicleBtn" type="button" class="secondary" style="width:100%;margin-top:8px">Excluir veículo selecionado</button></div>
+ <div class="card"><form id="settingsForm"><div><label>Meta diária de faturamento (R$)</label><input id="goal" type="number" min="0" step=".01" required></div>
+ <div><label>Dias que pretende trabalhar por semana (1 a 7)</label><input id="workDays" type="number" min="1" max="7" step="1" required></div><p class="note">A meta semanal é calculada automaticamente: meta diária × dias de trabalho. Mês = semana × 4,33; ano = semana × 52.</p>
+ <div class="formgrid"><div><label>Meta mínima por km (R$)</label><input id="minKm" type="number" min="0" step=".01" required></div><div><label>Meta mínima por hora (R$)</label><input id="minHour" type="number" min="0" step=".01" required></div><div><label>Lucro mínimo por corrida (R$)</label><input id="minProfit" type="number" min="0" step=".01" required></div></div><button class="primary">Salvar metas e critérios</button></form></div>
+ <div class="card" style="margin-top:12px"><h3 style="margin-top:0">Privacidade e dados</h3><p class="note">Esta versão salva os dados localmente neste navegador/aparelho. Limpar os dados do navegador pode apagá-los. Use Exportar backup regularmente. Ainda não há sincronização entre aparelhos.</p><button id="clearBtn" class="secondary" style="width:100%">Apagar todos os dados locais</button></div>
+</section>
+</main>
+<nav><button class="active" data-page="dashboard"><b>⌂</b>Início</button><button data-page="trips"><b>◉</b>Corridas</button><button data-page="records"><b>＋</b>Ganhos/gastos</button><button data-page="settings"><b>⚙</b>Ajustes</button></nav>
+<script>
+const $=id=>document.getElementById(id),today=()=>new Date().toLocaleDateString('en-CA'),money=n=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(n)||0);
+let data=JSON.parse(localStorage.getItem('driverControlData')||'null')||{incomes:[],expenses:[],workSessions:[],settings:{goal:300,minKm:2.2,minHour:50,minProfit:10,workDays:5},vehicles:[{id:'v1',name:'Onix 1.0',consumption:9,fuelPrice:7.29,maintenance:.35}],activeVehicleId:'v1'};
+if(!Array.isArray(data.vehicles)||!data.vehicles.length){const s=data.settings||{};data.vehicles=[{id:'v1',name:'Meu veículo',consumption:Number(s.consumption)||9,fuelPrice:Number(s.fuelPrice)||7.29,maintenance:Number(s.maintenance)||.35}];data.activeVehicleId='v1';}
+if(!Array.isArray(data.workSessions))data.workSessions=[];
+data.workSessions.forEach((x,i)=>{if(!x.id)x.id='legacy'+String(x.created??i);});
+data.settings=data.settings||{goal:300,minKm:2.2,minHour:50,minProfit:10,workDays:5};
+for(const [k,v] of Object.entries({goal:300,minKm:2.2,minHour:50,minProfit:10,workDays:5}))if(data.settings[k]===undefined)data.settings[k]=v;
+data.settings.workDays=Math.min(7,Math.max(1,Math.round(Number(data.settings.workDays)||5)));
+if(!data.vehicles.some(v=>v.id===data.activeVehicleId))data.activeVehicleId=data.vehicles[0].id;
+let period='day';
+function save(){localStorage.setItem('driverControlData',JSON.stringify(data));render();}
+function dateInPeriod(d){let x=new Date((d||today())+'T12:00:00'),now=new Date();if(period==='day')return x.toDateString()===now.toDateString();if(period==='week'){let start=new Date(now);start.setDate(now.getDate()-now.getDay());start.setHours(0,0,0,0);let end=new Date(start);end.setDate(start.getDate()+6);end.setHours(23,59,59,999);return x>=start&&x<=end;}if(period==='month')return x.getFullYear()===now.getFullYear()&&x.getMonth()===now.getMonth();return x.getFullYear()===now.getFullYear();}
+function render(){let ins=data.incomes.filter(x=>dateInPeriod(x.date)),exs=data.expenses.filter(x=>dateInPeriod(x.date)),sessions=data.workSessions.filter(x=>dateInPeriod(x.date));let rev=ins.reduce((a,x)=>a+x.amount,0),exp=exs.reduce((a,x)=>a+x.amount,0),km=ins.reduce((a,x)=>a+x.km,0),dailyGoal=Number(data.settings.goal)||0,days=Number(data.settings.workDays)||5,weeklyGoal=dailyGoal*days,goal=period==='week'?weeklyGoal:period==='month'?weeklyGoal*4.33:period==='year'?weeklyGoal*52:dailyGoal,percent=goal?Math.min(100,rev/goal*100):0;
+let totalMinutes=sessions.reduce((a,x)=>a+(Number(x.hours)||0)*60+(Number(x.minutes)||0),0),totalHours=totalMinutes/60;$('dRevenue').textContent=money(rev);$('dExpenses').textContent=money(exp);$('dProfit').textContent=money(rev-exp);$('dBalance').textContent=money(rev-exp);$('dProfitHour').textContent=totalHours>0?money((rev-exp)/totalHours):'—';$('dWorkTime').textContent=Math.floor(totalMinutes/60)+'h '+String(totalMinutes%60).padStart(2,'0')+'min';$('dGoal').textContent=money(goal);$('dProgress').style.width=percent+'%';$('dPercent').textContent=Math.round(percent)+'% concluído';$('dRemaining').textContent='Faltam '+money(Math.max(0,goal-rev));$('dTrips').textContent=ins.length;$('dKm').textContent=km.toLocaleString('pt-BR',{maximumFractionDigits:1})+' km';
+$('recentRecords').innerHTML=[...data.incomes.map(x=>({...x,type:'Ganho',sign:1,desc:x.platform})),...data.expenses.map(x=>({...x,type:'Despesa',sign:-1,desc:x.category+(x.desc?' • '+x.desc:'')}))].sort((a,b)=>b.created-a.created).slice(0,8).map(x=>`<div class="item"><div><strong>${esc(x.desc)}</strong><small>${x.type} • ${x.date}${x.km!==undefined?' • '+x.km+' km':''}</small></div><strong style="color:${x.sign>0?'var(--green)':'var(--red)'}">${x.sign>0?'+':'−'}${money(x.amount)}</strong></div>`).join('')||'<div class="empty">Nenhum lançamento ainda.</div>';renderWorkSessions();}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===b.dataset.page));});
+document.querySelectorAll('[data-period]').forEach(b=>b.onclick=()=>{period=b.dataset.period;document.querySelectorAll('[data-period]').forEach(x=>x.classList.toggle('active',x===b));render();});
+function activeVehicle(){return data.vehicles.find(v=>v.id===data.activeVehicleId)||data.vehicles[0];}
+$('tripForm').onsubmit=e=>{e.preventDefault();let s=data.settings,v=activeVehicle(),fare=+$('fare').value,km=+$('pickupKm').value+ +$('tripKm').value,min=+$('pickupMin').value+ +$('tripMin').value,cost=km*((v.fuelPrice/v.consumption)+v.maintenance),profit=fare-cost,perKm=km?fare/km:0,perHour=min?fare/(min/60):0,good=perKm>=s.minKm&&perHour>=s.minHour&&profit>=s.minProfit,mid=perKm>=s.minKm*.8&&perHour>=s.minHour*.8&&profit>0,status=good?'BOA':mid?'MÉDIA':'RUIM',color=good?'var(--green)':mid?'var(--yellow)':'var(--red)';
+$('tripResult').style.display='block';$('tripResult').style.background=good?'#13231b':mid?'#292411':'#2a171a';$('tripResult').innerHTML=`<h3 style="color:${color}">${status} — análise estimada</h3><p>Valor da oferta: <b>${money(fare)}</b></p><p>Distância total: <b>${km.toLocaleString('pt-BR')} km</b> • Tempo total: <b>${min} min</b></p><p>Bruto por km: <b>${money(perKm)}</b> • Bruto por hora: <b>${money(perHour)}</b></p><p>Custo estimado: <b>${money(cost)}</b></p><p>Resultado após custo estimado: <b>${money(profit)}</b></p><p class="note">Inclui combustível e manutenção configurados. Não inclui necessariamente todos os custos fixos, impostos ou tempo sem passageiro.</p><button id="saveTrip" class="primary" style="margin-top:8px">Registrar como ganho</button>`;$('saveTrip').onclick=()=>{data.incomes.push({platform:$('platform').value,amount:fare,km,date:today(),created:Date.now()});save();$('tripResult').innerHTML+='<p><b>Corrida registrada no histórico.</b></p>';};};
+$('offerImage').onchange=()=>{const f=$('offerImage').files&&$('offerImage').files[0];$('readOfferBtn').disabled=!f;$('ocrResults').style.display='none';if(!f){$('offerPreview').style.display='none';$('imageStatus').textContent='';return;}if(!f.type.startsWith('image/')){$('imageStatus').textContent='Escolha um arquivo de imagem.';$('readOfferBtn').disabled=true;return;}const url=URL.createObjectURL(f);$('offerPreview').src=url;$('offerPreview').style.display='block';$('imageStatus').textContent='Imagem carregada. Toque em “Reconhecer texto da imagem”.';};
+function parseBrazilNumber(s){s=String(s||'').trim().replace(/[^0-9.,]/g,'');if(!s)return NaN;if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else if(s.includes(','))s=s.replace(',','.');return Number(s);}
+$('readOfferBtn').onclick=async()=>{const file=$('offerImage').files&&$('offerImage').files[0];if(!file)return;const btn=$('readOfferBtn');btn.disabled=true;$('imageStatus').textContent='Preparando o reconhecimento…';try{if(!window.Tesseract)await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('Não foi possível carregar o mecanismo de leitura.'));document.head.appendChild(s);});const result=await Tesseract.recognize(file,'por+eng',{logger:m=>{if(m.status==='recognizing text')$('imageStatus').textContent='Lendo a imagem… '+Math.round((m.progress||0)*100)+'%';}});const txt=result.data.text||'';$('ocrText').textContent=txt||'Nenhum texto legível encontrado.';$('ocrResults').style.display='block';const vals=[...txt.matchAll(/R\s*\$\s*([0-9][0-9.,]*)/gi)].map(m=>parseBrazilNumber(m[1])).filter(n=>n>0),kms=[...txt.matchAll(/([0-9]+(?:[.,][0-9]+)?)\s*km\b/gi)].map(m=>parseBrazilNumber(m[1])),mins=[...txt.matchAll(/([0-9]+)\s*(?:min|minuto|minutos)\b/gi)].map(m=>+m[1]);let found=[];if(vals.length){$('fare').value=vals[0].toFixed(2);found.push('valor '+money(vals[0]));}if(kms.length){$('pickupKm').value=0;$('tripKm').value=kms[0];found.push(kms[0]+' km');}if(mins.length){$('pickupMin').value=0;$('tripMin').value=mins[0];found.push(mins[0]+' min');}$('imageStatus').textContent=found.length?'Leitura concluída: '+found.join(', ')+'. Confira os campos.':'Texto lido, mas preencha os campos manualmente.';}catch(err){$('imageStatus').textContent='Falha na leitura. Preencha os campos manualmente.';}finally{btn.disabled=false;btn.textContent='Reconhecer texto novamente';}};
+$('incomeDate').value=today();$('expenseDate').value=today();$('workDate').value=today();
+$('incomeForm').onsubmit=e=>{e.preventDefault();data.incomes.push({platform:$('incomePlatform').value,amount:+$('incomeAmount').value,km:+$('incomeKm').value||0,date:$('incomeDate').value,created:Date.now()});e.target.reset();$('incomeDate').value=today();$('incomeKm').value=0;save();alert('Ganho salvo.');};
+$('expenseForm').onsubmit=e=>{e.preventDefault();data.expenses.push({category:$('expenseCategory').value,amount:+$('expenseAmount').value,desc:$('expenseDesc').value,date:$('expenseDate').value,created:Date.now()});e.target.reset();$('expenseDate').value=today();save();alert('Despesa salva.');};
+function resetWorkForm(){ $('workForm').reset();$('workDate').value=today();$('workHours').value=0;$('workMinutes').value=0;$('workEditId').value='';$('workForm').querySelector('button[type="submit"]').textContent='Salvar tempo trabalhado';$('cancelWorkEdit').style.display='none';}
+function renderWorkSessions(){
+ const list=$('workSessionsList');if(!list)return;
+ const rows=[...data.workSessions].sort((a,b)=>String(b.date).localeCompare(String(a.date))||(Number(b.created)||0)-(Number(a.created)||0));
+ if(!rows.length){list.innerHTML='<div class="empty">Nenhum tempo registrado.</div>';return;}
+ list.innerHTML=rows.map(x=>{const id=String(x.id??x.created);return `<div class="item" style="align-items:center"><div><strong>${esc(x.date)}</strong><small>${Number(x.hours)||0}h ${String(Number(x.minutes)||0).padStart(2,'0')}min</small></div><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="action edit-work" type="button" data-id="${esc(id)}">Editar</button><button class="action delete-work" type="button" data-id="${esc(id)}">Excluir</button></div></div>`;}).join('');
+ list.querySelectorAll('.edit-work').forEach(btn=>btn.onclick=()=>{const item=data.workSessions.find(x=>String(x.id??x.created)===btn.dataset.id);if(!item)return;$('workEditId').value=String(item.id??item.created);$('workDate').value=item.date;$('workHours').value=Number(item.hours)||0;$('workMinutes').value=Number(item.minutes)||0;$('workForm').querySelector('button[type="submit"]').textContent='Salvar alterações';$('cancelWorkEdit').style.display='block';$('workDate').scrollIntoView({behavior:'smooth',block:'center'});});
+ list.querySelectorAll('.delete-work').forEach(btn=>btn.onclick=()=>{if(!confirm('Excluir este registro de tempo trabalhado?'))return;data.workSessions=data.workSessions.filter(x=>String(x.id??x.created)!==btn.dataset.id);if($('workEditId').value===btn.dataset.id)resetWorkForm();save();});
+}
+$('cancelWorkEdit').onclick=resetWorkForm;
+$('clearWorkSessions').onclick=()=>{if(!data.workSessions.length){alert('Não há registros de tempo para excluir.');return;}if(confirm('Excluir todos os registros de tempo trabalhado? Ganhos e despesas serão preservados.')){data.workSessions=[];resetWorkForm();save();}};
+$('workForm').onsubmit=e=>{e.preventDefault();const hours=+$('workHours').value,minutes=+$('workMinutes').value,date=$('workDate').value;if(!date||hours<0||hours>24||minutes<0||minutes>59||hours*60+minutes<=0){alert('Informe data e tempo trabalhado válidos.');return;}const editId=$('workEditId').value;if(editId){const item=data.workSessions.find(x=>String(x.id??x.created)===editId);if(!item){alert('Registro não encontrado. Atualize a tela e tente novamente.');resetWorkForm();return;}item.date=date;item.hours=hours;item.minutes=minutes;}else{data.workSessions.push({id:'ws'+Date.now()+Math.random().toString(16).slice(2),date,hours,minutes,created:Date.now()});}resetWorkForm();save();alert(editId?'Registro de tempo atualizado.':'Tempo trabalhado salvo.');};
+function renderVehicles(){const sel=$('vehicleSelect');sel.innerHTML=data.vehicles.map(v=>`<option value="${esc(v.id)}">${esc(v.name)}</option>`).join('');sel.value=data.activeVehicleId;const v=activeVehicle();$('vehicleName').value=v.name;$('vehicleConsumption').value=v.consumption;$('vehicleFuelPrice').value=v.fuelPrice;$('vehicleMaintenance').value=v.maintenance;$('vehicleSummary').textContent=`Em uso: ${v.name} • ${v.consumption} km/L • combustível ${money(v.fuelPrice)}/L.`;}
+function fillSettings(){for(let k of ['goal','minKm','minHour','minProfit'])$(k).value=data.settings[k]??0;$('workDays').value=data.settings.workDays??5;renderVehicles();}
+$('vehicleSelect').onchange=()=>{data.activeVehicleId=$('vehicleSelect').value;save();renderVehicles();};
+$('saveVehicleBtn').onclick=()=>{const v=activeVehicle();v.name=$('vehicleName').value.trim()||'Meu veículo';v.consumption=+$('vehicleConsumption').value;v.fuelPrice=+$('vehicleFuelPrice').value;v.maintenance=+$('vehicleMaintenance').value;if(v.consumption<=0){alert('Informe consumo maior que zero.');return;}save();renderVehicles();alert('Veículo salvo.');};
+$('newVehicleBtn').onclick=()=>{const id='v'+Date.now();data.vehicles.push({id,name:'Novo veículo',consumption:9,fuelPrice:7.29,maintenance:.35});data.activeVehicleId=id;save();renderVehicles();$('vehicleName').focus();};
+$('deleteVehicleBtn').onclick=()=>{if(data.vehicles.length<=1){alert('Mantenha pelo menos um veículo.');return;}if(confirm('Excluir o veículo selecionado?')){data.vehicles=data.vehicles.filter(v=>v.id!==data.activeVehicleId);data.activeVehicleId=data.vehicles[0].id;save();renderVehicles();}};
+$('settingsForm').onsubmit=e=>{e.preventDefault();for(let k of ['goal','minKm','minHour','minProfit'])data.settings[k]=+$(k).value;data.settings.workDays=Math.min(7,Math.max(1,Math.round(+$('workDays').value||1)));save();alert('Metas e critérios salvos.');};
+$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-projeto-motorista-'+today()+'.json';a.click();URL.revokeObjectURL(a.href);};
+$('clearBtn').onclick=()=>{if(confirm('Tem certeza? Isso apagará ganhos, despesas e configurações salvos neste aparelho.')){localStorage.removeItem('driverControlData');data={incomes:[],expenses:[],workSessions:[],settings:{goal:300,minKm:2.2,minHour:50,minProfit:10,workDays:5},vehicles:[{id:'v1',name:'Onix 1.0',consumption:9,fuelPrice:7.29,maintenance:.35}],activeVehicleId:'v1'};fillSettings();save();}};
+fillSettings();render();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script></body></html>
