@@ -1,4 +1,4 @@
-const CACHE_NAME = "projeto-motorista-v3-backup-restore-7";
+const CACHE_NAME = "projeto-motorista-v3-backup-ajustes-8";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
